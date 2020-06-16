@@ -7,4 +7,4 @@ compile:
 
 
 clean:
-	rm -f *.class *~
+	rm -f *.class *~ minijava-jtb.jj ./MethodInfo/*.class ./ClassInfo/*.class MiniJavaParser.java MiniJavaParserConstants.java JavaCharStream.java ParseException.java MiniJavaParserTokenManager.java Token.java TokenMgrError.java && rm -r syntaxtree visitor
