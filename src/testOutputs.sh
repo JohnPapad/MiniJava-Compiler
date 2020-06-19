@@ -14,7 +14,6 @@ fi
 
 for filename in $INPUT_FOLDER/*.java; do
     echo -----------------------------------------
-    echo $filename
 
     purefn=$(basename "$filename" .java)
     echo --- Now testing input file: "$purefn" ---
@@ -35,7 +34,7 @@ for filename in $INPUT_FOLDER/*.java; do
     echo - Java: Compiling "$purefn.java" ...
     javac "$filename"
 
-    echo - Java: Executing "$purefn" ...
+    echo - Java: Executing "$purefn.java" ...
     # java "Tests/$purefn" > "$purefn".java.out
     java -cp $INPUT_FOLDER $purefn > "$INPUT_FOLDER/$purefn".java.out || echo EXCEPTION > "$INPUT_FOLDER/$purefn".java.out
 
@@ -46,6 +45,7 @@ for filename in $INPUT_FOLDER/*.java; do
     echo - LLVM: Executing "$purefn".ll ...
     "$INPUT_FOLDER/$purefn".ll.exe > "$INPUT_FOLDER/$purefn".ll.out
 
+    echo "- Comparing the javac's output with the LLVM's one ..."
     cmp --silent "$INPUT_FOLDER/$purefn".java.out "$INPUT_FOLDER/$purefn".ll.out && echo -e "${GREEN}### SUCCESS ###${NC}" || echo -e "${RED}### FAILURE ###${NC}"    
     # rm -f *.class *~
     # rm -f *.out *~
