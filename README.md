@@ -2,6 +2,17 @@
 
 
 
+<a name="tools"/>
+
+## Tools used
+
+- [Java](https://www.java.com/en/) 
+- [JavaCC *(Java Compiler Compiler)*](https://javacc.github.io/javacc/) : a tool for generating top-down *LL(k)* parsers and lexical analyzers for the Java programming language.
+- [JTB *(Java Tree Builder)*](http://compilers.cs.ucla.edu/jtb/) : transforms *javacc* grammars in Java class hierarchies.
+- [LLVM](https://llvm.org/) : a collection of modular and reusable compiler and toolchain technologies.
+- [Clang](https://clang.llvm.org/) : a C language family frontend for *LLVM*, used for compiling *LLVM* files and producing executable ones.
+
+
 <a name="run"/>
 
 ## How to run
