@@ -1,10 +1,28 @@
 # MiniJava Compiler
 
+
+<a name="LLVM"/>
+
+## LLVM
+
+Visitors that convert MiniJava code into the intermediate representation used by the *LLVM compiler project* were implemented (intermediate code generation).    
+The *LLVM* language is documented in the [LLVM Language Reference Manual](https://llvm.org/docs/LangRef.html#instruction-reference), although only a subset of the instructions were used.
+
+### Types used
+
+- ```i1``` : a single bit, used for booleans *(practically takes up one byte)*
+- ```i8``` : a single byte
+- ```i8*``` : similar to a ```char*``` pointer
+- ```i32``` : a single integer
+- ```i32*``` : a pointer to an integer, can be used to point to an integer array
+- *static arrays* : e.g. ```[20 x i8]``` *(a constant array of 20 characters)*
+
+
 ### Instructions used
 - **declare** is used for the declaration of external methods. Only a few specific methods *(e.g., calloc, printf)* need to be declared.  
 ```declare i32 @puts(i8*)*```
 
-- **define** is used for defining our own methods. The return and argument types need to be specified, and the method needs to end with a *ret* instruction of the same type.   
+- **define** is used for defining our own methods. The return and argument types need to be specified, and the method needs to end with a ```ret``` instruction of the same type.   
 ```define i32 @main(i32 %argc, i8** argv) {...}```
 
 - **ret** is the return instruction. It is used to return the control flow and a value to the caller of the current function.  
@@ -26,29 +44,29 @@ The return type and parameters (with their types) need to be specified.
 - **add, and, sub, mul, xor** are used for mathematical operations. The result is the same type as the operands.   
 ```%sum = add i32 %a, %b```
 
-- **icmp** is used for comparing two operands. *icmp slt* for instance does a signed comparison of the operands and will return *i1 1*, if the first operand is less than the second, otherwise *i1 0*.   
+- **icmp** is used for comparing two operands. ```icmp slt``` for instance does a signed comparison of the operands and will return ```i1 1```, if the first operand is less than the second, otherwise ```i1 0```.   
 ```%case = icmp slt i32 %a, %b```
 
-- **br** with a *i1* operand and two labels will jump to the first label if the *i1* is one, and to the second label otherwise.   
+- **br** with a ```i1``` operand and two labels will jump to the first label if the ```i1``` is one, and to the second label otherwise.   
 ```br i1 %case, label %if, label %else```
 
 - **br** with only a single label will jump to that label.   
 ```br label %goto```
 
-- **label:** declares a label with the given name. The instruction before declaring a label needs to be a br operation, even if that *br* is simply a jump to the label.   
+- **label:** declares a label with the given name. The instruction before declaring a label needs to be a ```br``` operation, even if that ```br``` is simply a jump to the label.   
 ```label123:```
 
 - **bitcast** is used to cast between different pointer types. It takes the value and type to be cast, and the type that it will be cast to.   
 ```%ptr = bitcast i32* %ptr2 to i8**```
 
-- **getelementptr** is used to get the pointer to an element of an array from a pointer to that array and the index of the element. The result is also a pointer to the type that is passed as the first parameter *(in the case below it's an i8**). This example is like doing: ```ptr_idx = &ptr[idx]``` in C (you still need to do a load to get the actual value at that position).    
+- **getelementptr** is used to get the pointer to an element of an array from a pointer to that array and the index of the element. The result is also a pointer to the type that is passed as the first parameter (*in the case below it's an* ```i8*```). This example is like doing: ```ptr_idx = &ptr[idx]``` in C (you still need to do a ```load``` to get the actual value at that position).    
 ```%ptr_idx = getelementptr i8, i8* %ptr, i32 %idx```
 
-- **constant** is used to define a *constant*, such as a *string*. The size of the *constant* needs to be declared too. In the example below, the *string* is 12 bytes *([12 x i8])*. The result is a pointer to the given type.     
+- **constant** is used to define a *constant*, such as a *string*. The size of the *constant* needs to be declared too. In the example below, the *string* is 12 bytes (```[12 x i8]```). The result is a pointer to the given type.     
 (in the example below, ```@.str is a [12 x i8]*```)   
 ```@.str = constant [12 x i8] c"Hello world\00"```
 
-- **global** is used for declaring *global* variables (something that is needed for creating *V-Tables*). Just like *constant*, the result is a pointer to the given type.    
+- **global** is used for declaring *global* variables (something that is needed for creating *V-tables*). Just like ```constant```, the result is a pointer to the given type.    
     ```
     @.vtable = global [2 x i8*] [i8* bitcast (i32 ()* @func1 to i8*), i8* bitcast (i8* (i32, i32*)* @func2 to i8*)]
     ```
@@ -66,6 +84,9 @@ The return type and parameters (with their types) need to be specified.
         %c = phi i32 [%a, %lb1], [%b, %lb2]
     ```
 
+### V-table
+
+ A virtual table *(V-table)* is essentially a table of function pointers, pointed at by the first 8 bytes of an object. The *V-table* defines an address for each dynamic function the object supports. Consider a function ```foo``` in position 0 and ```bar``` in position 1 of the table *(with actual offset 8)*. If a method is overridden, the overriding version is inserted in the same location of the virtual table as the overridden version. Virtual calls are implemented by finding the address of the function to call through the virtual table. If we wanted to depict this in C, imagine that object ```obj``` is located at location ```x``` and we are calling ```foo``` which is in the 3rd position *(offset 16)* of the *V-table*. The address of the function that is going to be called is in memory location ```(*x) + 16```.
 
 <a name="tools"/>
 
