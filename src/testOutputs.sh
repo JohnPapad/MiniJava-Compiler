@@ -36,7 +36,7 @@ for filename in $INPUT_FOLDER/*.java; do
 
     echo - Java: Executing "$purefn.java" ...
     # java "Tests/$purefn" > "$purefn".java.out
-    java -cp $INPUT_FOLDER $purefn > "$INPUT_FOLDER/$purefn".java.out || echo EXCEPTION > "$INPUT_FOLDER/$purefn".java.out
+    java -cp $INPUT_FOLDER $purefn > "$INPUT_FOLDER/$purefn".java.out || echo Out of bounds > "$INPUT_FOLDER/$purefn".java.out
 
     # check for execution errors
 
