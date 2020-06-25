@@ -1,5 +1,21 @@
 # MiniJava Compiler
 
+ This project consists of designing and building a compiler for MiniJava, a subset of Java.   
+ MiniJava is designed so that its programs can be compiled by a full Java compiler like *javac*.  
+ It was developed for the class of ***"Compilers"*** in the Informatics Department.
+
+### Table of Contents
+
+
+[MiniJava Specifics](#MiniJava)
+
+[LLVM](#LLVM)
+
+[Tools used](#tools)
+
+[How to run](#run)
+
+
 
 <a name="MiniJava"/>
 
@@ -105,6 +121,7 @@ The return type and parameters (with their types) need to be specified.
 ### V-table
 
  A virtual table *(V-table)* is essentially a table of function pointers, pointed at by the first 8 bytes of an object. The *V-table* defines an address for each dynamic function the object supports. Consider a function ```foo``` in position 0 and ```bar``` in position 1 of the table *(with actual offset 8)*. If a method is overridden, the overriding version is inserted in the same location of the virtual table as the overridden version. Virtual calls are implemented by finding the address of the function to call through the virtual table. If we wanted to depict this in C, imagine that object ```obj``` is located at location ```x``` and we are calling ```foo``` which is in the 3rd position *(offset 16)* of the *V-table*. The address of the function that is going to be called is in memory location ```(*x) + 16```.
+ 
 
 <a name="tools"/>
 
